@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LexiPulse – Frans Woordenschat Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Space+Grotesk:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FFFAF0;--text:#111827;--muted:#6B7280;--orange:#F97316;--orangeD:#EA580C;--yellow:#FACC15;--green:#22C55E;--greenD:#16A34A;--red:#EF4444;--redD:#DC2626;--blue:#3B82F6;--blueD:#2563EB;--pink:#EC4899;--purple:#8B5CF6}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif}
+button,input,select{font:inherit}button{cursor:pointer}.app{min-height:100vh}.topbar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:5px solid #111827;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.logo{font-family:"Space Grotesk";font-weight:900;font-size:25px;letter-spacing:-1px}.logo span{color:var(--orange)}.streak{background:#FEF9C3;border:3px solid #EAB308;border-radius:18px;padding:8px 13px;font-weight:900}
+.container{max-width:1180px;margin:auto;padding:26px 18px 60px}.hero{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:22px}.hero h1{font-family:"Space Grotesk";font-size:clamp(34px,6vw,62px);line-height:.95;margin:0 0 10px;font-weight:900}.hero p{margin:0;color:var(--muted);font-weight:600}.stats{display:flex;gap:10px;flex-wrap:wrap}.stat{background:white;border:4px solid #111827;border-radius:20px;padding:12px 15px;box-shadow:0 5px 0 #111827;min-width:105px}.stat b{display:block;font-size:22px}.stat small{color:var(--muted);font-weight:700}
+.missions{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin:22px 0 28px}.mission{border:5px solid #111827;border-radius:30px;padding:20px;color:#111827;box-shadow:0 7px 0 #111827;transition:.15s;position:relative;overflow:hidden}.mission:hover{transform:translateY(-3px)}.mission.active{outline:5px solid #111827;outline-offset:3px}.m7{background:linear-gradient(135deg,#fbbf24,#f97316)}.m8{background:linear-gradient(135deg,#a3e635,#22c55e)}.m9{background:linear-gradient(135deg,#f472b6,#fb7185)}.m10{background:linear-gradient(135deg,#38bdf8,#3b82f6)}.m11{background:linear-gradient(135deg,#a78bfa,#8b5cf6)}.m12{background:linear-gradient(135deg,#2dd4bf,#10b981)}.mission h2{font-family:"Space Grotesk";margin:0;font-size:28px}.mission .num{font-size:12px;font-weight:900;text-transform:uppercase}.mission p{font-weight:700;margin:8px 0 15px}.mission .count{background:#fff;border:3px solid #111827;border-radius:13px;padding:5px 9px;display:inline-block;font-weight:900}
+.toolbar{background:#fff;border:5px solid #111827;border-radius:28px;padding:14px;display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;box-shadow:0 6px 0 #111827}.tab{border:3px solid #111827;background:#fff;border-radius:15px;padding:10px 15px;font-weight:900}.tab.active{background:#111827;color:#fff}.select,.search{border:3px solid #111827;border-radius:15px;padding:10px 13px;background:#fff;min-width:170px}
+.panel{background:#fff;border:5px solid #111827;border-radius:34px;padding:22px;box-shadow:0 7px 0 #111827}.panel h2{font-family:"Space Grotesk";font-size:30px;margin:0 0 5px}.sub{color:var(--muted);font-weight:600;margin-top:0}
+.flash-wrap{display:flex;justify-content:center;padding:22px 0}.perspective{perspective:1000px;width:min(560px,100%);min-height:380px}.flashcard{height:380px;position:relative;transform-style:preserve-3d;transition:transform .55s;cursor:pointer}.flashcard.flipped{transform:rotateY(180deg)}.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border:6px solid var(--yellow);border-radius:48px;background:#fff;box-shadow:12px 12px 0 #FED7AA;padding:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}.face.back{transform:rotateY(180deg);background:#FEF9C3;border-color:var(--orange)}.face .label{font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:var(--muted)}.word{font-family:"Space Grotesk";font-size:clamp(34px,7vw,60px);font-weight:900;margin:18px 0 8px}.translation{font-size:30px;font-weight:900}.audio{border:4px solid #111827;border-radius:20px;background:#DBEAFE;padding:9px 14px;font-weight:900;box-shadow:0 4px 0 #1E40AF;margin-top:12px}.grades{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:700px;margin:10px auto}.grade{border:4px solid #111827;border-radius:18px;padding:13px 7px;font-weight:900;box-shadow:0 5px 0 #111827}.again{background:#FEE2E2}.hard{background:#FFEDD5}.good{background:#DCFCE7}.easy{background:#DBEAFE}
+.quiz{max-width:800px;margin:auto}.progress{height:16px;background:#F3F4F6;border:3px solid #111827;border-radius:99px;overflow:hidden}.progress>div{height:100%;background:var(--green);width:0;transition:.2s}.qbox{margin:18px 0;padding:22px;background:#FEF9C3;border:4px solid #EAB308;border-radius:25px}.qword{font-family:"Space Grotesk";font-size:40px;font-weight:900}.options{display:grid;grid-template-columns:1fr 1fr;gap:12px}.option{border:4px solid #111827;border-radius:18px;padding:16px;background:#fff;text-align:left;font-weight:800;box-shadow:0 5px 0 #111827}.option.correct{background:#DCFCE7;border-color:#16A34A}.option.wrong{background:#FEE2E2;border-color:#DC2626}.result{text-align:center;padding:25px}.score{font-family:"Space Grotesk";font-size:70px;font-weight:900}
+.spell{max-width:700px;margin:auto;text-align:center}.spell input{width:100%;font-size:30px;font-weight:900;border:5px solid #111827;border-radius:20px;padding:15px;margin:18px 0}.bigbtn{border:4px solid #111827;border-radius:20px;padding:13px 20px;font-weight:900;background:var(--yellow);box-shadow:0 5px 0 #111827}.feedback{font-size:20px;font-weight:900;min-height:30px}
+.table-wrap{overflow:auto;border:4px solid #111827;border-radius:22px}.table{width:100%;border-collapse:collapse;background:#fff}.table th,.table td{padding:12px;border-bottom:2px solid #E5E7EB;text-align:left}.table th{background:#111827;color:#fff;position:sticky;top:0}.table tr:hover td{background:#FFFAF0}.mini-audio{border:2px solid #111827;background:#DBEAFE;border-radius:10px;padding:5px 8px;font-weight:900}
+.empty{text-align:center;padding:30px;color:var(--muted);font-weight:700}.hidden{display:none!important}
+@media(max-width:650px){.topbar{align-items:flex-start}.hero{display:block}.stats{margin-top:18px}.grades{grid-template-columns:1fr 1fr}.options{grid-template-columns:1fr}.flashcard,.perspective{height:340px;min-height:340px}.word{font-size:38px}.translation{font-size:25px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="topbar"><div class="logo">Lexi<span>Pulse</span> <small>FR</small></div><div class="streak">🔥 <span id="streak">0</span> dagen</div></header>
+<main class="container">
+<section class="hero"><div><h1>Frans oefenen.<br>Maar dan leuk.</h1><p>Mission 7 t/m 12 · flashcards · quiz · spelling · woordenlijst</p></div><div class="stats"><div class="stat"><b id="mastered">0</b><small>beheerst</small></div><div class="stat"><b id="learnCount">0</b><small>oefenen</small></div><div class="stat"><b id="totalCount">0</b><small>woorden</small></div></div></section>
+<section class="missions" id="missions"></section>
+<section class="toolbar">
+<button class="tab active" data-mode="flash">🃏 Flashcards</button>
+<button class="tab" data-mode="quiz">🎯 Quiz</button>
+<button class="tab" data-mode="spell">✍️ Spelling</button>
+<button class="tab" data-mode="list">📚 Woordenlijst</button>
+</section>
+<section id="content"></section>
+</main>
+</div>
+<script>
+const missions=[
+{id:7,name:"Mission 7",title:"Quelle est ton adresse?",desc:"Persoonlijke info, maanden en adressen",cls:"m7"},
+{id:8,name:"Mission 8",title:"Tu manges quoi?",desc:"Eten, drinken, fruit en groenten",cls:"m8"},
+{id:9,name:"Mission 9",title:"Ta famille est comment?",desc:"Familieleden, huisdieren en eigenschappen",cls:"m9"},
+{id:10,name:"Mission 10",title:"Voilà mon école!",desc:"School, uren, tijdstippen en werkwoorden",cls:"m10"},
+{id:11,name:"Mission 11",title:"Tu achètes quoi?",desc:"Winkelen, prijzen, getallen en voeding",cls:"m11"},
+{id:12,name:"Mission 12",title:"Les super vacances!",desc:"Vakantie, reizen, talen en landen",cls:"m12"}];
+
+const V=[
+[7,`un âge|een leeftijd
+un anniversaire|een verjaardag
+un appartement|een appartement
+un mois|een maand
+un nom|een naam
+un numéro|een nummer
+un prénom|een voornaam
+un téléphone|een telefoon
+une adresse|een adres
+une maison|een huis
+donner|geven
+habiter|wonen
+alors|dus / toen
+bien|goed
+chez moi|bij mij thuis
+pour toi|voor jou
+peut-être|misschien
+pourquoi?|waarom?
+quand?|wanneer?
+quel, quelle?|welk, welke?
+À bientôt!|Tot binnenkort!
+À demain|Tot morgen!
+à la maison|thuis
+Allo!|Hallo! (telefoon)
+(Comment) ça va?|Hoe gaat het?
+ça va bien.|het gaat goed.
+D'accord!|Akkoord! / Oké!
+J'habite à Bruxelles.|Ik woon in Brussel.
+J'habite rue de la Poste au numéro 6.|Ik woon in de Poststraat op nummer 6.
+madame|mevrouw
+monsieur|meneer
+Quel est ton nom?|Wat is je naam?
+janvier|januari
+février|februari
+mars|maart
+avril|april
+mai|mei
+juin|juni
+juillet|juli
+août|augustus
+septembre|september
+octobre|oktober
+novembre|november
+décembre|december`],
+[8,`le beurre|de boter
+un champignon|een champignon
+un coca|een cola
+le fromage|de kaas
+un fruit|een fruit / een stuk fruit
+le jambon|de ham
+un jus de fruit(s)|een vruchtensap
+un kiwi|een kiwi
+le lait|de melk
+un légume|een groente
+un oeuf|een ei
+un pain|een brood
+un poisson|een vis
+une banane|een banaan
+une carotte|een wortel
+l'eau|het water
+une limonade|een limonade
+une orange|een sinaasappel / appelsien
+une poire|een peer
+une pomme|een appel
+une pomme de terre|een aardappel
+une salade|een sla / salade
+une tomate|een tomaat
+bon, bonne|goed / lekker
+boire|drinken
+manger|eten
+prendre|nemen
+J'ai faim.|Ik heb honger.
+J'ai soif.|Ik heb dorst.`],
+[9,`un chat|een kat
+un chien|een hond
+un fils|een zoon
+un frère|een broer
+des grands-parents|grootouders
+un grand-père|een grootvader / opa
+un lapin|een konijn
+un oncle|een oom / nonkel
+des parents|ouders
+un papa|een papa
+un père|een vader
+une famille|een familie / gezin
+une fille|een dochter / meisje
+la Flandre|Vlaanderen
+une grand-mère|een grootmoeder / oma
+une maman|een mama
+une mère|een moeder
+une soeur|een zus
+une tante|een tante
+la Wallonie|Wallonië
+gentil, gentille|lief / aardig
+sympa|sympathiek / tof
+en Flandre|in Vlaanderen
+beaucoup|veel
+peu|weinig
+très|heel / erg
+penser (à)|denken (aan)
+venir|komen
+Il/elle s'appelle Jo.|Hij/zij heet Jo.`],
+[10,`le français|het Frans
+le matin|de ochtend / 's morgens
+midi|de middag / twaalf uur 's middags
+un mot|een woord
+le néerlandais|het Nederlands
+le soir|de avond / 's avonds
+le temps|de tijd / het weer
+l'après-midi|de namiddag / 's namiddags
+un directeur|een directeur
+une directrice|een directrice
+une faute|een fout
+une heure|een uur
+une journée|een dag / overdag
+une leçon|een les
+une minute|een minuut
+une phrase|een zin
+une seconde|een seconde
+une tartine|een boterham
+commencer|beginnen
+écrire|schrijven
+lire|lezen
+parler|spreken / praten
+travailler|werken
+après|na
+avant|voor (tijd)
+sans|zonder
+à midi|'s middags / om twaalf uur
+À quelle heure?|Om hoe laat?
+à six heures|om zes uur
+Il est quelle heure?|Hoe laat is het?
+Il est une heure.|Het is een uur.`],
+[11,`un cent|een cent
+le chocolat|de chocolade
+un croissant|een croissant
+un euro|een euro
+un gramme|een gram
+un kilo|een kilo
+un prix|een prijs
+le sucre|de suiker
+un supermarché|een supermarkt
+une baguette|een stokbrood
+une bouteille|een fles
+la caisse|de kassa
+la charcuterie|fijne vleeswaren / charcuterie
+la confiture|jam / confituur
+une glace|een ijsje
+la soupe|de soep
+la viande|het vlees
+combien?|hoeveel?
+encore|nog
+maintenant|nu
+mais|maar
+acheter|kopen
+payer|betalen
+vouloir|willen
+fermé, fermée|gesloten
+ouvert, ouverte|open
+Ça fait combien?|Hoeveel is het? / Hoeveel kost het?
+Ça fait huit euros.|Dat is acht euro.
+cent grammes de ...|honderd gram ...
+un kilo de ...|een kilo ...
+Merci beaucoup!|Dank u wel!
+Je voudrais ...|Ik zou graag ... willen`],
+[12,`un avion|een vliegtuig
+un bateau|een boot
+un train|een trein
+un voyage|een reis
+la Belgique|België
+la date|de datum
+l'Europe|Europa
+la France|Frankrijk
+les vacances|de vakantie
+une valise|een koffer
+une voiture|een auto
+chouette, chouette|leuk / tof
+formidable, formidable|geweldig
+intéressant, intéressante|interessant
+super, super|super
+raconter|vertellen
+rentrer|naar huis terugkeren / thuiskomen
+rester|blijven
+trouver|vinden
+en Belgique|in België
+à Paris|in Parijs
+ou|of
+au mois de janvier|in de maand januari
+C'est chouette!|Dat is leuk!
+C'est intéressant!|Dat is interessant!
+On y va!|We zijn weg! / Laten we gaan!`]
+];
+
+let words=[];V.forEach(([m,s])=>s.split("\n").forEach((line,i)=>{let [f,d]=line.split("|");words.push({id:`m${m}_${i}`,mission:m,french:f,dutch:d})}));
+let state=JSON.parse(localStorage.getItem("anouk_vocab_stats")||'{"mastered":[],"learning":[],"streak":0,"lastDate":null}');
+let mode="flash", mission=7, flashIndex=0, flipped=false, quiz=null, spell=null;
+
+function save(){localStorage.setItem("anouk_vocab_stats",JSON.stringify(state));updateStats()}
+function updateStats(){document.getElementById("mastered").textContent=state.mastered.length;document.getElementById("learnCount").textContent=state.learning.length;document.getElementById("totalCount").textContent=words.length;document.getElementById("streak").textContent=state.streak}
+function activity(){let d=new Date().toISOString().slice(0,10);if(state.lastDate!==d){if(state.lastDate){let a=new Date(state.lastDate),b=new Date(d),diff=Math.round((b-a)/86400000);state.streak=diff===1?state.streak+1:1}else state.streak=1;state.lastDate=d;save()}}
+function speak(text){let s=text.replace(/\([^)]*\)/g,"").replace(/[.!?]+$/,"").trim();if(!window.speechSynthesis)return;let u=new SpeechSynthesisUtterance(s);u.lang="fr-FR";u.rate=.85;let vs=speechSynthesis.getVoices();let v=vs.find(x=>x.lang&&x.lang.toLowerCase().startsWith("fr"));if(v)u.voice=v;speechSynthesis.cancel();speechSynthesis.speak(u)}
+function missionCards(){document.getElementById("missions").innerHTML=missions.map(m=>`<button class="mission ${m.cls} ${mission===m.id?'active':''}" onclick="setMission(${m.id})"><div class="num">${m.name}</div><h2>${m.title}</h2><p>${m.desc}</p><span class="count">${words.filter(w=>w.mission===m.id).length} woorden</span></button>`).join("")}
+function setMission(m){mission=m;flashIndex=0;flipped=false;render();missionCards()}
+function render(){let c=document.getElementById("content");if(mode==="flash")renderFlash(c);if(mode==="quiz")renderQuiz(c);if(mode==="spell")renderSpell(c);if(mode==="list")renderList(c);updateStats()}
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{mode=b.dataset.mode;document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===b));render()});
+
+function currentWords(){let a=words.filter(w=>w.mission===mission);return a.length?a:words}
+function renderFlash(c){let a=currentWords(),w=a[flashIndex%a.length];c.innerHTML=`<div class="panel"><h2>Flashcards · Mission ${mission}</h2><p class="sub">Klik op de kaart om de vertaling te zien. Gebruik daarna een beoordeling.</p><div class="flash-wrap"><div class="perspective"><div class="flashcard ${flipped?'flipped':''}" onclick="flip()"><div class="face"><div class="label">Frans</div><div class="word">${w.french}</div><button class="audio" onclick="event.stopPropagation();speak('${esc(w.french)}')">🔊 Luister</button><div class="sub">Klik om om te draaien</div></div><div class="face back"><div class="label">Nederlands</div><div class="translation">${w.dutch}</div><button class="audio" onclick="event.stopPropagation();speak('${esc(w.french)}')">🔊 Nog eens</button></div></div></div></div><div class="grades"><button class="grade again" onclick="grade('again')">Opnieuw</button><button class="grade hard" onclick="grade('hard')">Moeilijk</button><button class="grade good" onclick="grade('good')">Goed</button><button class="grade easy" onclick="grade('easy')">Makkelijk</button></div><p style="text-align:center;font-weight:800">${(flashIndex%a.length)+1} / ${a.length}</p></div>`}
+function esc(s){return s.replace(/\\/g,"\\\\").replace(/'/g,"\\'")}
+function flip(){flipped=!flipped;render()}
+function grade(g){let w=currentWords()[flashIndex%currentWords().length];if(g==="again"||g==="hard"){if(!state.learning.includes(w.id))state.learning.push(w.id);state.mastered=state.mastered.filter(x=>x!==w.id)}else{if(!state.mastered.includes(w.id))state.mastered.push(w.id);state.learning=state.learning.filter(x=>x!==w.id)}activity();flashIndex++;flipped=false;render()}
+
+function renderQuiz(c){if(!quiz)startQuiz();if(quiz.done){c.innerHTML=`<div class="panel result"><div class="sub">Mission ${mission} afgerond</div><div class="score">${Math.round(quiz.score/10*100)}%</div><h2>${quiz.score} / 10 goed</h2><button class="bigbtn" onclick="startQuiz();render()">Opnieuw</button></div>`;return}
+let q=quiz.questions[quiz.i],pct=quiz.i/10*100;c.innerHTML=`<div class="panel quiz"><h2>Quiz · Mission ${mission}</h2><p class="sub">10 vragen · kies het juiste antwoord</p><div class="progress"><div style="width:${pct}%"></div></div><div class="qbox"><div class="label">Vraag ${quiz.i+1} van 10</div><div class="qword">${q.ask}</div></div><div class="options">${q.options.map((o,i)=>`<button class="option" onclick="answerQuiz(${i})">${o}</button>`).join("")}</div><p class="feedback">${quiz.feedback||""}</p></div>`}
+function startQuiz(){let a=[...currentWords()];a.sort(()=>Math.random()-.5);let qs=a.slice(0,Math.min(10,a.length)).map(w=>{let wrong=words.filter(x=>x.id!==w.id).sort(()=>Math.random()-.5).slice(0,3).map(x=>x.dutch);let opts=[w.dutch,...wrong].sort(()=>Math.random()-.5);return{word:w,ask:w.french,options:opts,correct:opts.indexOf(w.dutch)}});while(qs.length<10){let w=a[qs.length%a.length],opts=[w.dutch,...words.filter(x=>x.id!==w.id).sort(()=>Math.random()-.5).slice(0,3).map(x=>x.dutch)].sort(()=>Math.random()-.5);qs.push({word:w,ask:w.french,options:opts,correct:opts.indexOf(w.dutch)})}quiz={questions:qs,i:0,score:0,feedback:"",done:false}}
+function answerQuiz(i){let q=quiz.questions[quiz.i],buttons=[...document.querySelectorAll(".option")];buttons[i].classList.add(i===q.correct?"correct":"wrong");if(i===q.correct){quiz.score++;quiz.feedback="Goed!";}else quiz.feedback="Niet helemaal.";activity();setTimeout(()=>{quiz.i++;quiz.feedback="";if(quiz.i>=10)quiz.done=true;render()},500)}
+
+function renderSpell(c){if(!spell)startSpell();if(spell.done){c.innerHTML=`<div class="panel result"><div class="score">${Math.round(spell.score/10*100)}%</div><h2>${spell.score} / 10 goed</h2><button class="bigbtn" onclick="startSpell();render()">Opnieuw</button></div>`;return}
+let w=spell.questions[spell.i];c.innerHTML=`<div class="panel spell"><h2>Spelling · Mission ${mission}</h2><p class="sub">Typ het Franse woord. Hoofdletters en accenten worden soepel beoordeeld.</p><div class="qbox"><div class="label">Vertaal naar Frans</div><div class="qword">${w.dutch}</div></div><button class="audio" onclick="speak('${esc(w.french)}')">🔊 Luister naar het Franse woord</button><input id="spellInput" autocomplete="off" spellcheck="false" placeholder="Typ hier het Franse woord..." onkeydown="if(event.key==='Enter')answerSpell()"><button class="bigbtn" onclick="answerSpell()">Controleer</button><div class="feedback" id="spellFeedback">${spell.feedback||""}</div><p style="font-weight:800">${spell.i+1} / 10</p></div>`;setTimeout(()=>document.getElementById("spellInput")?.focus(),50)}
+function norm(s){return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[’']/g,"'").trim().replace(/\s+/g," ")}
+function startSpell(){let a=[...currentWords()].sort(()=>Math.random()-.5);spell={questions:Array.from({length:10},(_,i)=>a[i%a.length]),i:0,score:0,feedback:"",done:false}}
+function answerSpell(){let input=document.getElementById("spellInput"),w=spell.questions[spell.i];if(!input)return;let ok=norm(input.value)===norm(w.french);if(ok)spell.score++;spell.feedback=ok?"Goed!":"Het juiste antwoord is: "+w.french;activity();render();if(!ok)setTimeout(()=>{if(!spell.done)render()},900);else setTimeout(()=>{if(!spell.done)render()},650)}
+
+function renderList(c){c.innerHTML=`<div class="panel"><h2>Woordenlijst</h2><p class="sub">Zoek, filter en beluister woorden.</p><div style="display:flex;gap:10px;flex-wrap:wrap;margin:15px 0"><input class="search" id="search" placeholder="Zoek Frans of Nederlands..." oninput="drawTable()"><select class="select" id="status" onchange="drawTable()"><option value="all">Alle statussen</option><option value="mastered">Beheerst</option><option value="learning">Oefenen</option></select><select class="select" id="missionFilter" onchange="drawTable()"><option value="all">Alle missions</option>${missions.map(m=>`<option value="${m.id}">Mission ${m.id}</option>`).join("")}</select></div><div class="table-wrap"><table class="table"><thead><tr><th>Frans</th><th>Nederlands</th><th>Mission</th><th>Audio</th><th>Status</th></tr></thead><tbody id="tbody"></tbody></table></div></div>`;drawTable()}
+function drawTable(){let q=(document.getElementById("search")?.value||"").toLowerCase(),s=document.getElementById("status")?.value||"all",mf=document.getElementById("missionFilter")?.value||"all";let a=words.filter(w=>(mf==="all"||w.mission==mf)&&(!q||(w.french+" "+w.dutch).toLowerCase().includes(q))&&(s==="all"||(s==="mastered"&&state.mastered.includes(w.id))||(s==="learning"&&state.learning.includes(w.id))));document.getElementById("tbody").innerHTML=a.map(w=>`<tr><td><b>${w.french}</b></td><td>${w.dutch}</td><td>M${w.mission}</td><td><button class="mini-audio" onclick="speak('${esc(w.french)}')">🔊</button></td><td>${state.mastered.includes(w.id)?"✓ Beheerst":state.learning.includes(w.id)?"↻ Oefenen":"—"}</td></tr>`).join("")||`<tr><td colspan="5" class="empty">Geen woorden gevonden.</td></tr>`}
+
+missionCards();updateStats();render();
+</script>
+</body>
+</html>
